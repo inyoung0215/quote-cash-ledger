@@ -1,0 +1,47 @@
+[project]
+name = "quote-cash-ledger"
+version = "0.1.0"
+description = "견적 캐시 원장 - 보류/확정/해제 2단계 과금 API (학습용 구현)"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "aiomysql>=0.2.0",
+    "cryptography>=43",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "ruff>=0.7",
+    "asgi-lifespan>=2.1",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.setuptools]
+packages = ["app", "app.api", "app.services", "app.workers"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff.lint]
+# FURB157: Decimal("500") 을 Decimal(500) 으로 줄이라고 한다.
+#   정수는 Decimal 로 정확히 들어가니 틀린 말은 아니지만,
+#   금액은 예외 없이 문자열을 거친다는 규칙을 코드 전체에서 지키는 편이
+#   나중에 소수가 섞여 들어올 때 안전하다. 일관성을 택했다.
+# B008: FastAPI 의 Depends 관용구다. 이 프레임워크에서는 정상이다.
+ignore = ["FURB157", "B008"]
